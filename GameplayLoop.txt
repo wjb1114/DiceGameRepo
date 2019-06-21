@@ -1,0 +1,39 @@
+4	- Number of enemies per encounter (Note: does not roll on special encounter, which will always have a single enemy)
+6	- Number of actions availale to each enemy. Attack (twice as likely for each enemy, 2 rolls enable this option), heal, special move per enemy, flinch move that does nothing, and run. Both flinch and run requires confirmation roll, flinch requires even number, run requires 6, if confirm fails then redo base roll)
+8	- hit chance roll, multiplied with accuracy value. If 8, hits regardless of value.
+10	- hit amount roll, multiplied with strength value. If 10, hit ignores enemy def value.
+12	- Roll encounter chance, will vary based on area, rolls each main loop function call
+20	- Roll Encounter (20 encounters, plus 1 bonus if you roll a 1 and get a confirmation roll of 1 afterwards, approx. half are enemies, otehr half are other effects)
+
+Stats: Str, Acc, Health, Def
+Str - Multiplied with hit amount roll to determine damage dealt. Improves by 1 with player level up, starts at 10
+Acc - Multiplied with hit chance roll to determine whether attack hits. Improves by 1 with every other (even numbers) player level up, starts at 20.
+Health - Amount of damage that can be taken. Improves by 20 each level up.
+Def - Reduces damage taken by (def * 0.1 * (10 - hit amount roll) unless hit amount roll is 10.
+
+Encounters with multiple enemies only change number of rolls taken by AI during their turn, as well as total HP of enemy during encounter.
+
+Multiple areas, 5 main linear paths consisting of multiple areas. Once all have been visited, unlocks final area with single, automatic encounter with bonus enemy that can be accessed from any branch's end zone.
+
+By defeating bonus encounter, either as random or at final zone, win state is achieved.
+
+Game loop runs 12 times, representing hours of daylight. Once per loop, an encounter may be triggered.
+
+Zones take time to transition between, between 1 and 3 hours. Once you enter a zone, you may elect to stay there or move onwards. If player stays, they stay through rest of current day.
+
+Option to return to home area at end of day, with prompt stating 4 hours left during daylight. If select yes, next day begins from starting area. If select no, next day starts from current area, but chance of extra encounter overnight that cannot be run from. If player more tan 4 hours travel time from start, they can either camp in current location or return to previous area within 4 hours travel time to camp.
+
+Progress is saved as a cookie in the user's web browser. Saving is done between days.
+
+Linear level up progression, since stats increase at linear rate and experience between levels does not change.
+
+--------------------------------------------------------------------------------------------------------
+
+Day start:
+	Determine current location, give travel options to player (including staying in current area to grind)
+	While travelling or staying, roll for encounter every game hour.
+	Player health is regenrated after each combat encounter.
+	When 8 hours have elapsed, message is sent to player as reminder only 4 hours remain. Travel options given.
+	When 12 hours have elapsed, player can travel backwards for 4 hours worth of distance, or may stay in current area, and then camps, resetting hour counter. If player camps somewhere other than starting area, roll encounter before resetting time counter.
+	Day counter increments when hour counter resets.
+	If player gets game over, they may load last save.
