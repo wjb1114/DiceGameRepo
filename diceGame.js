@@ -15,7 +15,8 @@ function startGameLoop (gameState = defaultNewPlayerArgs) {
 	let playerStatus = new Map();
 	playerStatus = defaultNewPlayerArgs;
 	initializeGameWindow();
-	console.log(playerStatus);
+	startDay();
+	//console.log(playerStatus);
 }
 
 function initializeGameWindow () {
@@ -30,23 +31,36 @@ function initializeGameWindow () {
 	gameWindowDiv.appendChild(gameWindowForm);
 }
 
-function addButton (buttonText, buttonType, buttonFunction) {
+function addButton (buttonText, buttonType, buttonFunction, buttonClass) {
 	let newButton = document.createElement("button");
 	newButton.setAttribute("type", buttonType);
 	newButton.setAttribute("onclick", buttonFunction);
+	newButton.setAttribute("class", buttonClass);
 	let newButtonText = document.createTextNode(buttonText);
-	let gameWindowDiv = document.getElementById("game-window");
+	let gameWindowDiv = document.getElementById("game-form");
 	newButton.appendChild(newButtonText);
 	gameWindowDiv.appendChild(newButton);
 }
 
 function startDay (startZone) {
-	let currentZone = "Home";
-	addButton("Go Out", "button", "testAlert('test')");
+	let textArea = document.getElementById("game-text");
+	textArea.innerHTML = "Test text";
+	addButton("Go Out", "button", "testAlert('leave')", "game-elements");
+	addButton("Stay and Train", "button", "testAlert('stay')", "game-elements");
 }
 
 function testAlert(val) {
 	alert(val);
+	removeElementsByClassName ("game-elements");
+	let textArea = document.getElementById("game-text");
+	textArea.innerHTML = "";
+}
+
+function removeElementsByClassName (className) {
+	let toRemove = document.getElementsByClassName(className);
+	while (toRemove.length > 0) {
+		toRemove[0].parentNode.removeChild(toRemove[0]);
+	}
 }
 
 // function initialText(zone) {
