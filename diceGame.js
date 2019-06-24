@@ -344,7 +344,22 @@ function playerAttack () {
 }
 
 function enemyAttack () {
-
+	let aiRoll = rollDie(6);
+	if (aiRoll === 1 || aiRoll === 2) {
+		standardAttack (currentEnemy, playerStatus);
+	}
+	else if (aiRoll === 3) {
+		specialAttack (currentEnemy, playerStatus);
+	}
+	else if (aiRoll === 4) {
+		healEntity();
+	}
+	else if (aiRoll === 5) {
+		//process flinch
+	}
+	else {
+		//process flee
+	}
 }
 
 function rollDie (numSides) {
