@@ -19,6 +19,7 @@ let currentPath;
 let currentZone;
 let currentHealth;
 let timeCounter;
+let travelCounter;
 
 let wolfEncounter;
 let rockSlideEncounter;
@@ -87,7 +88,7 @@ let Zone = class {
 	}
 }
 let Enemy = class {
-	constructor (name, pluralName, strength, accuracy, maxHealth, defence, specialMoveName, specialMoveDamage, expGiven) {
+	constructor (name, pluralName, strength, accuracy, maxHealth, defence, specialMoveName, specialMoveDamage, expGiven, currentHealth) {
 		this.name = name;
 		this.pluralName = pluralName;
 		this.strength = strength;
@@ -97,6 +98,7 @@ let Enemy = class {
 		this.specialMoveName = specialMoveName;
 		this.specialMoveDamage = specialMoveDamage;
 		this.expGiven = expGiven;
+		this.currentHealth = currentHealth;
 	}
 }
 
@@ -113,7 +115,7 @@ let NonCombatEncounter = class {
 		this.affectNumber = affectNumber;
 	}
 }
-let wolfEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 25);
+let wolfEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 25, 150);
 
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
@@ -274,15 +276,31 @@ function travelPath(currentPathOption) {
 }
 
 function beginTravelTime(areaGoal) {
+	removeElementsByClassName ("game-elements");
 	currentZone = areaGoal;
-	let travelCounter = 0;
+	travelCounter = 0;
 	while (travelCounter < areaGoal.timeToTravel) {
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
 			initEncounters();
 			performEncounter(currentZone.encounterTable[rollDie(20)]);
+			break;
 		}
 		timeCounter++;
 		travelCounter++;
+	}
+}
+
+function continueTravelTime(areaGoal) {
+	removeElementsByClassName ("game-elements");
+	currentZone = areaGoal;
+	while (travelCounter < areaGoal.timeToTravel) {
+		timeCounter++;
+		travelCounter++;
+		if (rollDie(12) <= currentZone.chanceOfEncounter) {
+			initEncounters();
+			performEncounter(currentZone.encounterTable[rollDie(20)]);
+			break;
+		}
 	}
 }
 
@@ -297,7 +315,7 @@ function performEncounter(encounter) {
 			currentEnemy.maxHealth *= numEnemies;
 			currentEnemy.expGiven *= numEnemies;
 			currentEnemyHealth = currentEnemy.maxHealth;
-			alert("You are attacked by " + numEnemies + " " + currentEnemy.namePlural + "!");
+			alert("You are attacked by " + numEnemies + " " + currentEnemy.pluralName + "!");
 			textArea.innerHTML = "The " + numEnemies + " " + currentEnemy.pluralName + " are staring you down.";
 		}
 		else {
@@ -306,10 +324,7 @@ function performEncounter(encounter) {
 			textArea.innerHTML = "The " + currentEnemy.name + " is staring you down.";
 		}
 
-		addButton("Attack", "button", "processDamage(" + playerStatus.strength + ")", "game-elements");
-		addButton("Special Attack", "button", "specialAttack(" + playerStatus.strength + ")", "game-elements");
-		addButton("Heal", "button", "healEntity(" + playerStatus.strength + ")", "game-elements");
-		addButton("Run Away", "button", "runFromBattle(" + playerStatus.strength + ")", "game-elements");
+		playerAttack();
 	}
 	else if (encounter.constructor.name === "NonCombatEncounter") {
 		//textDescription, statToAffect, affectNumber
@@ -317,8 +332,8 @@ function performEncounter(encounter) {
 }
 
 function playerAttack () {
-	addButton("Attack", "button", "processDamage(" + playerStatus.strength + ")", "game-elements");
-	addButton("Special Attack", "button", "specialAttack(" + playerStatus.strength + ")", "game-elements");
+	addButton("Attack", "button", "standardAttack(playerStatus, currentEnemy)", "game-elements");
+	addButton("Special Attack", "button", "specialAttack(playerStatus, currentEnemy)", "game-elements");
 	addButton("Heal", "button", "healEntity(" + playerStatus.strength + ")", "game-elements");
 	addButton("Run Away", "button", "runFromBattle(" + playerStatus.strength + ")", "game-elements");
 }
@@ -331,11 +346,42 @@ function rollDie (numSides) {
 	return Math.floor(Math.random() * numSides) + 1;
 }
 
-function processDamage(damageVal, attackingEntity, receivingEntity) {
+function standardAttack(attackingEntity, receivingEntity) {
+	let damageVal = processDamage(attackingEntity, receivingEntity);
+	let textArea = document.getElementById("game-text");
+	if (damageVal > 0) {
+		textArea.innerHTML = "You hit for " + damageVal + " damage!";
+		addButton("Okay", "button", "enemyAttack()", "game-elements");
+	}
+	else {
+		textArea.innerHTML = "You missed the attack!";
+		addButton("Okay", "button", "enemyAttack()", "game-elements");
+	}
+}
+
+function specialAttack(attackingEntity, receivingEntity) {
+	let damageTotal = 0;
+	let textArea = document.getElementById("game-text");
+	for (let i = 0; i < rolLDie(4); i++) {
+		damageTotal += processDamage(attackingEntity, receivingEntity);
+	}
+	if (damageTotal > 0) {
+		textArea.innerHTML = "You attacked for a total of " + damageTotal + " damage!";
+		addButton("Okay", "button", "enemyAttack()", "game-elements");
+	}
+	else {
+		testArea.innerHTML = "You missed every attack!";
+		addButton("Okay", "button", "enemyAttack()", "game-elements");
+	}
+}
+
+function processDamage(attackingEntity, receivingEntity) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
 	let accuracyRollOne = rollDie(8);
 	let accuracyRollTwo = rollDie(8);
+	let damageRoll = rollDie(10);
+	let damageVal = attackingEntity.strength * damageRoll;
 	let largerRoll;
 	if (accuracyRollOne > accuracyRollTwo) {
 		largerRoll = accuracyRollOne;
@@ -344,20 +390,11 @@ function processDamage(damageVal, attackingEntity, receivingEntity) {
 		largerRoll = accuracyRollTwo;
 	}
 
-	if (largerRoll === 8) {
-		//automatically hits
-	}
-	else if (accuracyRoll * attackingEntity.accuracy > 125) {
-		//hits
+	if (largerRoll === 8 || largerRoll * attackingEntity.accuracy > 125) {
+		return damageVal;
 	}
 	else {
-		//misses
-	}
-}
-
-function specialAttack(damageVal, attackingEntity, receivingEntity) {
-	for (let i = 0; i < rolLDie(4); i++) {
-		processDamage(damageVal, attackingEntity, receivingEntity);
+		return 0;
 	}
 }
 
