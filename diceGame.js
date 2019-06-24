@@ -119,8 +119,8 @@ let wolfEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 25, 15
 
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
-	rockSlideEncounter = new NonCombatEncounter("You are hit by a rockslide!", currentHealth, -100);
-	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", currentHealth, 20);
+	rockSlideEncounter = new NonCombatEncounter("You are hit by a rockslide!", "health", -100);
+	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 20);
 
 	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, rockSlideEncounter, rockSlideEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 	emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
@@ -292,13 +292,12 @@ function beginTravelTime(areaGoal) {
 
 function continueTravelTime(areaGoal) {
 	removeElementsByClassName ("game-elements");
-	currentZone = areaGoal;
 	while (travelCounter < areaGoal.timeToTravel) {
 		timeCounter++;
 		travelCounter++;
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
 			initEncounters();
-			performEncounter(currentZone.encounterTable[rollDie(20)]);
+			performEncounter(currentZone.encounterTable[rollDie(encounterTable.length)]);
 			break;
 		}
 	}
@@ -328,6 +327,12 @@ function performEncounter(encounter) {
 	}
 	else if (encounter.constructor.name === "NonCombatEncounter") {
 		//textDescription, statToAffect, affectNumber
+		if (encounter.affectNumber > 0) {
+			alert (encounter.textDescription + " Your " + encounter.statToAffect + " is boosted by " + encounter.affectNumber + "!");
+		}
+		else if (encounter.affectNumber < 0) {
+			alert (encounter.textDescription + " Your " + encounter.statToAffect + " takes " + (-1 * encounter.affectNumber) + " in damage!");
+		}
 	}
 }
 
@@ -362,7 +367,7 @@ function standardAttack(attackingEntity, receivingEntity) {
 function specialAttack(attackingEntity, receivingEntity) {
 	let damageTotal = 0;
 	let textArea = document.getElementById("game-text");
-	for (let i = 0; i < rolLDie(4); i++) {
+	for (let i = 0; i < rollDie(4); i++) {
 		damageTotal += processDamage(attackingEntity, receivingEntity);
 	}
 	if (damageTotal > 0) {
@@ -370,7 +375,7 @@ function specialAttack(attackingEntity, receivingEntity) {
 		addButton("Okay", "button", "enemyAttack()", "game-elements");
 	}
 	else {
-		testArea.innerHTML = "You missed every attack!";
+		textArea.innerHTML = "You missed every attack!";
 		addButton("Okay", "button", "enemyAttack()", "game-elements");
 	}
 }
