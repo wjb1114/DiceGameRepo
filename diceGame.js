@@ -155,37 +155,37 @@ function initEncounters() {
 	swampTables = [testTable, testTable, testTable, testTable, testTable];
 	forestTables = [testTable, testTable, testTable, testTable, testTable];
 
-	homeZone = new Zone ("Home", emptyTable, 0, 0);
+	homeZone = new Zone ("Home", emptyTable, 1, 0);
 
-	mountainZoneOne = new Zone ("Mountain1", mountainTables[0], 1, 3);
-	mountainZoneTwo = new Zone ("Mountain2", mountainTables[1], 2, 4);
-	mountainZoneThree = new Zone ("Mountain3", mountainTables[2], 3, 5);
-	mountainZoneFour = new Zone ("Mountain4", mountainTables[3], 4, 8);
-	mountainZoneFive = new Zone ("Mountain5", mountainTables[4], 5, 9);
+	mountainZoneOne = new Zone ("Mountain1", mountainTables[0], 1, 7);
+	mountainZoneTwo = new Zone ("Mountain2", mountainTables[1], 2, 8);
+	mountainZoneThree = new Zone ("Mountain3", mountainTables[2], 3, 9);
+	mountainZoneFour = new Zone ("Mountain4", mountainTables[3], 4, 10);
+	mountainZoneFive = new Zone ("Mountain5", mountainTables[4], 5, 11);
 
-	islandZoneOne = new Zone ("Island1", islandTables[0], 1, 3);
-	islandZoneTwo = new Zone ("Island2", islandTables[1], 2, 4);
-	islandZoneThree = new Zone ("Island3", islandTables[2], 3, 5);
-	islandZoneFour = new Zone ("Island4", islandTables[3], 4, 8);
-	islandZoneFive = new Zone ("Island5", islandTables[4], 5, 9);
+	islandZoneOne = new Zone ("Island1", islandTables[0], 1, 7);
+	islandZoneTwo = new Zone ("Island2", islandTables[1], 2, 8);
+	islandZoneThree = new Zone ("Island3", islandTables[2], 3, 9);
+	islandZoneFour = new Zone ("Island4", islandTables[3], 4, 10);
+	islandZoneFive = new Zone ("Island5", islandTables[4], 5, 11);
 
-	plainsZoneOne = new Zone ("Plains1", plainsTables[0], 1, 3);
-	plainsZoneTwo = new Zone ("Plains2", plainsTables[1], 2, 4);
-	plainsZoneThree = new Zone ("Plains3", plainsTables[2], 3, 5);
-	plainsZoneFour = new Zone ("Plains4", plainsTables[3], 4, 8);
-	plainsZoneFive = new Zone ("Plains5", plainsTables[4], 5, 9);
+	plainsZoneOne = new Zone ("Plains1", plainsTables[0], 1, 7);
+	plainsZoneTwo = new Zone ("Plains2", plainsTables[1], 2, 8);
+	plainsZoneThree = new Zone ("Plains3", plainsTables[2], 3, 9);
+	plainsZoneFour = new Zone ("Plains4", plainsTables[3], 4, 10);
+	plainsZoneFive = new Zone ("Plains5", plainsTables[4], 5, 11);
 
-	swampZoneOne = new Zone ("Swamp1", swampTables[0], 1, 3);
-	swampZoneTwo = new Zone ("Swamp2", swampTables[1], 2, 4);
-	swampZoneThree = new Zone ("Swamp3", swampTables[2], 3, 5);
-	swampZoneFour = new Zone ("Swamp4", swampTables[3], 4, 8);
-	swampZoneFive = new Zone ("Swamp5", swampTables[4], 5, 9);
+	swampZoneOne = new Zone ("Swamp1", swampTables[0], 1, 7);
+	swampZoneTwo = new Zone ("Swamp2", swampTables[1], 2, 8);
+	swampZoneThree = new Zone ("Swamp3", swampTables[2], 3, 9);
+	swampZoneFour = new Zone ("Swamp4", swampTables[3], 4, 10);
+	swampZoneFive = new Zone ("Swamp5", swampTables[4], 5, 11);
 
-	forestZoneOne = new Zone ("Forest1", forestTables[0], 1, 3);
-	forestZoneTwo = new Zone ("Forest2", forestTables[1], 2, 4);
-	forestZoneThree = new Zone ("Forest3", forestTables[2], 3, 5);
-	forestZoneFour = new Zone ("Forest4", forestTables[3], 4, 8);
-	forestZoneFive = new Zone ("Forest5", forestTables[4], 5, 9);
+	forestZoneOne = new Zone ("Forest1", forestTables[0], 1, 7);
+	forestZoneTwo = new Zone ("Forest2", forestTables[1], 2, 8);
+	forestZoneThree = new Zone ("Forest3", forestTables[2], 3, 9);
+	forestZoneFour = new Zone ("Forest4", forestTables[3], 4, 10);
+	forestZoneFive = new Zone ("Forest5", forestTables[4], 5, 11);
 
 	finalZone = new Zone ("Castle", finalEncounterTable, 8, 12);
 
@@ -197,15 +197,12 @@ function initEncounters() {
 	zonePaths = [zonePathOne, zonePathTwo, zonePathThree, zonePathFour, zonePathFive];
 }
 
-// currentLevel, currentXP, str, acc, hp, def, unlockedAreas, dayCounter
-
 function startGameLoop (gameState = defaultNewPlayerArgs) {
 	initEncounters();
 	currentZone = homeZone;
 	currentPath = zonePathOne;
 	initializeGameWindow();
 	startDay();
-	//console.log(playerStatus);
 }
 
 function initializeGameWindow () {
@@ -233,7 +230,7 @@ function addButton (buttonText, buttonType, buttonFunction, buttonClass) {
 
 function startDay (startZone) {
 	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "Test text";
+	textArea.innerHTML = "You wake up at " + currentZone.name + ".";
 	addButton("Go Out", "button", "selectArea()", "game-elements");
 	if (currentZone !== homeZone) {
 		addButton("Stay and Train", "button", "testAlert('stay')", "game-elements");
@@ -260,12 +257,19 @@ function removeElementsByClassName (className) {
 function selectArea() {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "Which area would you like to explore?";
-	addButton("Mountains", "button", "selectPath('mountain')", "game-elements");
-	addButton("Islands", "button", "selectPath('island')", "game-elements");
-	addButton("Plains", "button", "selectPath('plain')", "game-elements");
-	addButton("Swamp", "button", "selectPath('swamp')", "game-elements");
-	addButton("Forest", "button", "selectPath('forest')", "game-elements");
+	if (currentZone.name === homeZone.name) {
+		textArea.innerHTML = "Which area would you like to explore?";
+		addButton("Mountains", "button", "selectPath('mountain')", "game-elements");
+		addButton("Islands", "button", "selectPath('island')", "game-elements");
+		addButton("Plains", "button", "selectPath('plain')", "game-elements");
+		addButton("Swamp", "button", "selectPath('swamp')", "game-elements");
+		addButton("Forest", "button", "selectPath('forest')", "game-elements");
+	}
+	else {
+		textArea.innerHTML = "Will you move forward or head back?";
+		addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
+		addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+	}
 }
 
 function selectPath (pathToSelect) {
@@ -298,51 +302,77 @@ function travelPath(currentPathOption) {
 	beginTravelTime (currentPath[pathIndex + 1]);
 }
 
+function travelPathBack (currentPathOption) {
+	let pathIndex = currentPath.indexOf(currentZone);
+	beginTravelTime (currentPath[pathIndex - 1]);
+}
+
 function beginTravelTime(areaGoal) {
 	removeElementsByClassName ("game-elements");
 	currentZone = areaGoal;
 	travelCounter = 0;
+	let gotEncounter = false;
+	let nothingHappened = false;
 	while (travelCounter < areaGoal.timeToTravel) {
+		timeCounter++;
+		travelCounter++;
+		console.log ("Day Timer " + timeCounter + ". Travel Timer " + travelCounter);
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
+			gotEncounter = true;
 			let encounterNum = rollDie(currentZone.encounterTable.length);
 			encounterNum -= 1;
 			console.log (encounterNum);
 			performEncounter(currentZone.encounterTable[encounterNum]);
-			//performEncounter(currentZone.encounterTable[rollDie(20)]);
 			break;
 		}
-		timeCounter++;
-		travelCounter++;
+		let textArea = document.getElementById("game-text");
+		nothingHappened = true;
+		textArea.innerHTML = "Nothing Happened.";
+		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+		break;
+	}
+	if (gotEncounter === false && nothingHappened === false) {
+		newZoneArrival();
 	}
 }
 
 function continueTravelTime(areaGoal) {
 	removeElementsByClassName ("game-elements");
+	let gotEncounter = false;
+	let nothingHappened = false;
 	while (travelCounter < areaGoal.timeToTravel) {
 		timeCounter++;
 		travelCounter++;
+		console.log ("Day Timer " + timeCounter + ". Travel Timer " + travelCounter);
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
-			initEncounters();
-			let encounterNum = rollDie(encounterTable.length);
+			gotEncounter = true;
+			let encounterNum = rollDie(currentZone.encounterTable.length);
 			encounterNum -= 1;
 			console.log (encounterNum);
 			performEncounter(currentZone.encounterTable[encounterNum]);
 			break;
 		}
+		let textArea = document.getElementById("game-text");
+		nothingHappened = true;
+		textArea.innerHTML = "Nothing Happened.";
+		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+		break;
+	}
+	if (gotEncounter === false && nothingHappened === false) {
+		newZoneArrival();
 	}
 }
 
 function performEncounter(encounter) {
 	if (encounter.constructor.name === "CombatEncounter")	{
-		//name, strength, accuracy, maxHealth, defence, specialMoveName, specialMoveDamage, expGiven
 		removeElementsByClassName ("game-elements");
 		let textArea = document.getElementById("game-text");
-		currentEnemy = new Enemy(encounter.enemy.name, encounter.enemy.pluralName, encounter.enemy.strength, encounter.enemy.accuracy, encounter.enemy.maxHealth, encounter.enemy.defence, encounter.enemy.specialMoveName, encounter.enemy.specialMoveDamage, encounter.enemy.expGiven);
+		currentEnemy = new Enemy(encounter.enemy.name, encounter.enemy.pluralName, encounter.enemy.strength, encounter.enemy.accuracy, encounter.enemy.maxHealth, encounter.enemy.defence, encounter.enemy.specialMoveName, encounter.enemy.specialMoveDamage, encounter.enemy.expGiven, encounter.enemy.currentHealth);
 		let numEnemies = rollDie(4);
 		if (numEnemies > 1) {
 			currentEnemy.maxHealth *= numEnemies;
 			currentEnemy.expGiven *= numEnemies;
-			currentEnemyHealth = currentEnemy.maxHealth;
+			currentEnemy.currentHealth = currentEnemy.maxHealth;
 			alert("You are attacked by " + numEnemies + " " + currentEnemy.pluralName + "!");
 			textArea.innerHTML = "The " + numEnemies + " " + currentEnemy.pluralName + " are staring you down.";
 		}
@@ -355,30 +385,36 @@ function performEncounter(encounter) {
 		playerAttack();
 	}
 	else if (encounter.constructor.name === "NonCombatEncounter") {
-		//textDescription, statToAffect, affectNumber
+		removeElementsByClassName ("game-elements");
+		let textArea = document.getElementById("game-text");
 		if (encounter.affectNumber > 0) {
-			alert (encounter.textDescription + " Your " + encounter.statToAffect + " is boosted by " + encounter.affectNumber + "!");
+			textArea.innerHTML = encounter.textDescription + " Your " + encounter.statToAffect + " is boosted by " + encounter.affectNumber + "!";
 		}
 		else if (encounter.affectNumber < 0) {
-			alert (encounter.textDescription + " Your " + encounter.statToAffect + " takes " + (-1 * encounter.affectNumber) + " in damage!");
+			textArea.innerHTML = encounter.textDescription + " Your " + encounter.statToAffect + " takes " + (-1 * encounter.affectNumber) + " in damage!";
 		}
+		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
 	}
 }
 
 function playerAttack () {
 	removeElementsByClassName ("game-elements");
+	console.log("Enemy Health: " + currentEnemy.currentHealth);
+	console.log("Player Health: " + playerStatus.currentHealth);
 	if (playerStatus.currentHealth <= 0) {
 		endCombat (true, 0);
 	}
 	else if (currentEnemy.currentHealth <= 0) {
 		endCombat (false, currentEnemy.expGiven);
 	}
-	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "What do you do?";
-	addButton("Attack", "button", "standardAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
-	addButton("Special Attack", "button", "specialAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
-	addButton("Heal", "button", "healEntity(playerStatus, 'enemyAttack()')", "game-elements");
-	addButton("Run Away", "button", "runFromBattle(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+	else {
+		let textArea = document.getElementById("game-text");
+		textArea.innerHTML = "What do you do?";
+		addButton("Attack", "button", "standardAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+		addButton("Special Attack", "button", "specialAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+		addButton("Heal", "button", "healEntity(playerStatus, 'enemyAttack()')", "game-elements");
+		addButton("Run Away", "button", "runFromBattle(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+	}
 }
 
 function enemyAttack () {
@@ -389,35 +425,37 @@ function enemyAttack () {
 	else if (currentEnemy.currentHealth <= 0) {
 		endCombat (false, currentEnemy.expGiven);
 	}
-	let textArea = document.getElementById("game-text");
-	let aiRoll = rollDie(6);
-	if (aiRoll === 1 || aiRoll === 2) {
-		standardAttack (currentEnemy, playerStatus, "playerAttack()");
-	}
-	else if (aiRoll === 3) {
-		specialAttack (currentEnemy, playerStatus, "playerAttack()");
-	}
-	else if (aiRoll === 4) {
-		healEntity(currentEnemy, "playerAttack()");
-	}
-	else if (aiRoll === 5) {
-		let flinchRoll = rollDie(6);
-		if (flinchRoll % 2 === 0) {
-			textArea.innerHTML = "The enemy flinches!";
-			addButton("Okay", "button", "playerAttack()", "game-elements");
-		}
-		else {
-			enemyAttack();
-		}
-	}
 	else {
-		let fleeRoll = rollDie(6);
-		if (fleeRoll === 6) {
-			runFromBattle(currentEnemy, playerStatus, "playerAttack()");
+		let textArea = document.getElementById("game-text");
+		let aiRoll = rollDie(6);
+		if (aiRoll === 1 || aiRoll === 2) {
+			standardAttack (currentEnemy, playerStatus, "playerAttack()");
+		}
+		else if (aiRoll === 3) {
+			specialAttack (currentEnemy, playerStatus, "playerAttack()");
+		}
+		else if (aiRoll === 4) {
+			healEntity(currentEnemy, "playerAttack()");
+		}
+		else if (aiRoll === 5) {
+			let flinchRoll = rollDie(6);
+			if (flinchRoll % 2 === 0) {
+				textArea.innerHTML = "The enemy flinches!";
+				addButton("Okay", "button", "playerAttack()", "game-elements");
+			}
+			else {
+				enemyAttack();
+			}
 		}
 		else {
-			textArea.innerHTML = "The enemy tries to run, but fails!";
-			addButton("Okay", "button", "playerAttack()", "game-elements");
+			let fleeRoll = rollDie(6);
+			if (fleeRoll === 6) {
+				runFromBattle(currentEnemy, playerStatus, "playerAttack()");
+			}
+			else {
+				textArea.innerHTML = "The enemy tries to run, but fails!";
+				addButton("Okay", "button", "playerAttack()", "game-elements");
+			}
 		}
 	}
 }
@@ -438,6 +476,7 @@ function standardAttack(attackingEntity, receivingEntity, turnModifier) {
 	}
 	if (damageVal > 0) {
 		textArea.innerHTML = attacker + " hit for " + damageVal + " damage!";
+		receivingEntity.currentHealth -= damageVal;
 		addButton("Okay", "button", turnModifier, "game-elements");
 	}
 	else {
@@ -461,6 +500,7 @@ function specialAttack(attackingEntity, receivingEntity, turnModifier) {
 	}
 	if (damageTotal > 0) {
 		textArea.innerHTML = attacker + " attacked for a total of " + damageTotal + " damage!";
+		receivingEntity.currentHealth -= damageTotal;
 		addButton("Okay", "button", turnModifier, "game-elements");
 	}
 	else {
@@ -511,7 +551,7 @@ function healEntity(healingEntity, turnModifier) {
 	else {
 		healer = "The enemy";
 	}
-	textArea.innerHtml = healer + " healed for " + healRoll + " points of health!";
+	textArea.innerHTML = healer + " healed for " + healAmount + " points of health!";
 	addButton("Okay", "button", turnModifier, "game-elements");
 }
 
@@ -519,7 +559,7 @@ function runFromBattle(attackingEntity, receivingEntity, turnModifier) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
 	let runner = "";
-	if (attackingEntity = playerStatus) {
+	if (attackingEntity === playerStatus) {
 		runner = "You";
 	}
 	else {
@@ -544,11 +584,38 @@ function endCombat (isPlayerDead, expGained) {
 	}
 	else if (expGained !== 0) {
 		textArea.innerHTML = "You win! You gained " + expGained + " EXP!";
+		playerStatus.exp += expGained;
+		if (playerStatus.exp > 1000) {
+			levelUp();
+			textArea.innerHTML += " You gained a level!";
+		}
 	}
 	else {
 		textArea.innerHTML = "You gained 0 EXP.";
 	}
-	addButton("Okay", "button", "continueTravelTime()", "game-elements");
+	playerStatus.currentHealth = playerStatus.maxHealth;
+	addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+}
+
+function levelUp() {
+	playerStatus.exp -= 1000;
+	playerStatus.level += 1;
+	playerStatus.strength += 1;
+	playerStatus.defence += 1;
+	playerStatus.maxHealth += 20;
+	if (level % 2 === 0) {
+		playerStatus.accuracy += 1;
+	}
+}
+
+function newZoneArrival() {
+	removeElementsByClassName ("game-elements");
+	let textArea = document.getElementById("game-text");
+	textArea.innerHTML = "You have arrived at " + currentZone.name + ". What will you do?";
+	addButton("Go Out", "button", "selectArea()", "game-elements");
+	if (currentZone.name !== homeZone.name) {
+		addButton("Stay and Train", "button", "testAlert('stay')", "game-elements");
+	}
 }
 
 startGameLoop();
