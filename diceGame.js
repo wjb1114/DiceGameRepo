@@ -1,6 +1,6 @@
 "use strict";
 
-let defaultVisitedZones = ["Home"];
+let defaultVisitedZones = [];
 let defaultNewPlayerArgs = new Map();
 defaultNewPlayerArgs.set("currentLevel", 1);
 defaultNewPlayerArgs.set("currentXP", 0);
@@ -21,7 +21,7 @@ let PlayerObj = class {
 		this.currentHealth = currentHealth;
 		this.level = level;
 		this.exp = exp;
-		this.dayCOuntTotal = dayCountTotal;
+		this.dayCountTotal = dayCountTotal;
 		this.unlockedAreas = unlockedAreas;
 	}
 }
@@ -43,6 +43,7 @@ let currentZone;
 let currentHealth;
 let timeCounter;
 let travelCounter;
+let isSleeping = false;
 
 let wolfEncounter;
 let rockSlideEncounter;
@@ -140,13 +141,19 @@ let NonCombatEncounter = class {
 }
 let wolfEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 25, 150);
 
+emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
+homeZone = new Zone ("Home", emptyTable, 1, 0);
+
+if (!playerStatus.unlockedAreas.includes(homeZone.name)) {
+	playerStatus.unlockedAreas.push(homeZone.name);
+}
+
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
 	rockSlideEncounter = new NonCombatEncounter("You are hit by a rockslide!", "health", -100);
 	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 20);
 
 	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, rockSlideEncounter, rockSlideEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
-	emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 	finalEncounterTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 
 	mountainTables = [testTable, testTable, testTable, testTable, testTable];
@@ -154,8 +161,6 @@ function initEncounters() {
 	plainsTables = [testTable, testTable, testTable, testTable, testTable];
 	swampTables = [testTable, testTable, testTable, testTable, testTable];
 	forestTables = [testTable, testTable, testTable, testTable, testTable];
-
-	homeZone = new Zone ("Home", emptyTable, 1, 0);
 
 	mountainZoneOne = new Zone ("Mountain1", mountainTables[0], 1, 7);
 	mountainZoneTwo = new Zone ("Mountain2", mountainTables[1], 2, 8);
@@ -229,22 +234,20 @@ function addButton (buttonText, buttonType, buttonFunction, buttonClass) {
 }
 
 function startDay (startZone) {
+	removeElementsByClassName ("game-elements");
+	if (isSleeping === true) {
+		isSleeping = false;
+		playerStatus.dayCountTotal++;
+	}
 	let textArea = document.getElementById("game-text");
 	textArea.innerHTML = "You wake up at " + currentZone.name + ".";
 	addButton("Go Out", "button", "selectArea()", "game-elements");
 	if (currentZone !== homeZone) {
-		addButton("Stay and Train", "button", "testAlert('stay')", "game-elements");
+		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 	}
 	currentHealth = playerStatus.maxHealth;
 	timeCounter = 0;
 	initEncounters();
-}
-
-function testAlert(val) {
-	alert(val);
-	removeElementsByClassName ("game-elements");
-	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "";
 }
 
 function removeElementsByClassName (className) {
@@ -316,18 +319,16 @@ function beginTravelTime(areaGoal) {
 	while (travelCounter < areaGoal.timeToTravel) {
 		timeCounter++;
 		travelCounter++;
-		console.log ("Day Timer " + timeCounter + ". Travel Timer " + travelCounter);
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
 			gotEncounter = true;
 			let encounterNum = rollDie(currentZone.encounterTable.length);
 			encounterNum -= 1;
-			console.log (encounterNum);
 			performEncounter(currentZone.encounterTable[encounterNum]);
 			break;
 		}
 		let textArea = document.getElementById("game-text");
 		nothingHappened = true;
-		textArea.innerHTML = "Nothing Happened.";
+		textArea.innerHTML = "Nothing Happened. You have " + (12 - timeCounter) + " hours left in the day. You will arrive at " + areaGoal.name + " in " + (areaGoal.timeToTravel - travelCounter) + " hours.";
 		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
 		break;
 	}
@@ -343,18 +344,15 @@ function continueTravelTime(areaGoal) {
 	while (travelCounter < areaGoal.timeToTravel) {
 		timeCounter++;
 		travelCounter++;
-		console.log ("Day Timer " + timeCounter + ". Travel Timer " + travelCounter);
 		if (rollDie(12) <= currentZone.chanceOfEncounter) {
 			gotEncounter = true;
-			let encounterNum = rollDie(currentZone.encounterTable.length);
-			encounterNum -= 1;
-			console.log (encounterNum);
+			let encounterNum = (rollDie(currentZone.encounterTable.length) - 1);
 			performEncounter(currentZone.encounterTable[encounterNum]);
 			break;
 		}
 		let textArea = document.getElementById("game-text");
 		nothingHappened = true;
-		textArea.innerHTML = "Nothing Happened.";
+		textArea.innerHTML = "Nothing Happened. You have " + (12 - timeCounter) + " hours left in the day. You will arrive at " + areaGoal.name + " in " + (areaGoal.timeToTravel - travelCounter) + " hours.";
 		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
 		break;
 	}
@@ -393,7 +391,12 @@ function performEncounter(encounter) {
 		else if (encounter.affectNumber < 0) {
 			textArea.innerHTML = encounter.textDescription + " Your " + encounter.statToAffect + " takes " + (-1 * encounter.affectNumber) + " in damage!";
 		}
-		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+		if (isSleeping === false) {
+			addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+		}
+		else if (isSleeping === true) {
+			addButton("Okay", "button", "startDay(currentZone)", "game-elements");
+		}
 	}
 }
 
@@ -594,7 +597,12 @@ function endCombat (isPlayerDead, expGained) {
 		textArea.innerHTML = "You gained 0 EXP.";
 	}
 	playerStatus.currentHealth = playerStatus.maxHealth;
-	addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+	if (isSleeping === false) {
+		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
+	}
+	else if (isSleeping === true) {
+		addButton("Okay", "button", "startDay(currentZone)", "game-elements");
+	}
 }
 
 function levelUp() {
@@ -610,27 +618,58 @@ function levelUp() {
 
 function newZoneArrival() {
 	removeElementsByClassName ("game-elements");
+	if (!playerStatus.unlockedAreas.includes(currentZone.name)) {
+		playerStatus.unlockedAreas.push(currentZone.name);
+	}
 	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "You have arrived at " + currentZone.name + ". What will you do?";
-	addButton("Go Out", "button", "selectArea()", "game-elements");
-	if (currentZone.name !== homeZone.name) {
-		addButton("Stay and Train", "button", "testAlert('stay')", "game-elements");
+	let pathIndex = currentPath.indexOf(currentZone);
+	if ((12 - timeCounter) >= currentPath[pathIndex + 1].timeToTravel) {
+		textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day. What will you do?";
+		addButton("Go Out", "button", "selectArea()", "game-elements");
+	}
+	else {
+		textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day, which is not enough to go forward.";
+		addButton("Rest for the Night", "button", "restForTheNight()", "game-elements");
+		if (currentZone !== currentPath[0]) {
+			if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
+				textArea.innerHTML += " However, there is still time to go backwards.";
+				addButton("Head Back", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+			}
+		}
+	}
+	if (currentZone.name !== homeZone.name && timeCounter < 12) {
+		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
+	}
+}
+
+function stayAndTrain() {
+	timeCounter++;
+	let encounterNum = (rollDie(currentZone.encounterTable.length) - 1);
+	performEncounter(currentZone.encounterTable[encounterNum]);
+}
+
+function restForTheNight() {
+	isSleeping = true;
+	removeElementsByClassName ("game-elements");
+	let textArea = document.getElementById("game-text");
+	textArea.innerHTML = "You rest at " + currentZone.name + "for the night."
+	if (currentZone.name === homeZone.name) {
+		removeElementsByClassName ("game-elements");
+		textArea.innerHTML += " Since you are home, you will sleep safely.";
+		playerStatus.currentHealth = playerStatus.maxHealth;
+		addButton("Okay", "button", "startDay(currentZone)", "game-elements");
+	}
+	else {
+		removeElementsByClassName ("game-elements");
+		textArea.innerHTML += " Since you are not home, you may be attacked!";
+		let encounterNum = (rollDie(currentZone.encounterTable.length) - 1);
+		addButton("Okay", "button", "performEncounter(currentZone.encounterTable[" + encounterNum + "])", "game-elements");
 	}
 }
 
 startGameLoop();
 
-// get current location, default is home
-// prompt to travel or stay and grind (grind option not available from home location)
-// once travelling or staying, begin incrementing hours timer
-// each increment, roll D12 to get encounter chance
-// if encounter is triggered, roll D20 to get encounter from location's map
-// perform combat loop or other encounter logic
-// if combat encounter, restore player health afterwards
-// once location increment ends, prompt to either stay or travel
-// once hours timer hits 8, prompt reminder for 4 hours remaining
-// once hours timer hits 12, prompt travel or stay, travel locations within 4 hours travel time
-// once resting, check if player is home or not
-// if home, increment day counter and reset hour counter
-// if not home, roll D20 to get encounter from location's map, and do not allow player to run
-// once encounter ends, increment day counter and reset hour counter
+// TODO: Lock Castle until visited locations length of 26
+// TODO: Prevent forward movement from Castle
+// TODO: Special Logic for Boss enemy, including WIn State
+// TODO: Seed encounter tables, more creative zone names
