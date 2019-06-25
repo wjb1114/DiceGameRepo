@@ -269,9 +269,26 @@ function selectArea() {
 		addButton("Forest", "button", "selectPath('forest')", "game-elements");
 	}
 	else {
-		textArea.innerHTML = "Will you move forward or head back?";
-		addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
-		addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+		if (currentZone.name === currentPath[5].name) {
+			if (playerStatus.unlockedAreas.length >= 26) {
+				textArea.innerHTML = "The castle is now unlocked. Will you move forward or head back?";
+				addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
+				addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+			}
+			else {
+				textArea.innerHTML = "The castle is locked. You will need to head back.";
+				addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+			}
+		}
+		else if (currentZone.name === currentPath[6].name) {
+			textArea.innerHTML = "You are in the castle and cannot go forward. You will need to retreat.";
+			addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+		}
+		else {
+			textArea.innerHTML = "Will you move forward or head back?";
+			addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
+			addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+		}
 	}
 }
 
@@ -391,6 +408,17 @@ function performEncounter(encounter) {
 		else if (encounter.affectNumber < 0) {
 			textArea.innerHTML = encounter.textDescription + " Your " + encounter.statToAffect + " takes " + (-1 * encounter.affectNumber) + " in damage!";
 		}
+		if (encounter.statToAffect === 'health') {
+			playerStatus.currentHealth += encounter.affectNumber;
+			if (playerStatus.currentHealth > playerStatus.maxHealth) {
+				playerStatus.currentHealth = playerStatus.maxHealth;
+			}
+			else if (playerStatus.currentHealth <= 0) {
+				textArea.innerHTML = "You managed to escape with your life, head home, and rest. Be more careful!";
+				currentZone = homeZone;
+				startDay();
+			}
+		}
 		if (isSleeping === false) {
 			addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
 		}
@@ -416,7 +444,9 @@ function playerAttack () {
 		addButton("Attack", "button", "standardAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
 		addButton("Special Attack", "button", "specialAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
 		addButton("Heal", "button", "healEntity(playerStatus, 'enemyAttack()')", "game-elements");
-		addButton("Run Away", "button", "runFromBattle(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+		if (isSleeping === false) {
+			addButton("Run Away", "button", "runFromBattle(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
+		}
 	}
 }
 
@@ -582,7 +612,7 @@ function endCombat (isPlayerDead, expGained) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
 	if (isPlayerDead === true) {
-		textArea.innerHTML = "You managed to escape with your life, head home, and heal your wounds. Be more careful!";
+		textArea.innerHTML = "You managed to escape with your life, head home, and rest. Be more careful!";
 		currentZone = homeZone;
 	}
 	else if (expGained !== 0) {
@@ -620,6 +650,12 @@ function newZoneArrival() {
 	removeElementsByClassName ("game-elements");
 	if (!playerStatus.unlockedAreas.includes(currentZone.name)) {
 		playerStatus.unlockedAreas.push(currentZone.name);
+		if (currentZone.name === currentPath[5].name) {
+			alert("You find a magical-looking lever and pull it. One of the castle gates is now open!");
+			if (playerStatus.unlockedAreas.length === 26) {
+				alert("You feel a chill in the air. The last castle gate has been unlocked, and the Demon King is waiting for you!");
+			}
+		}
 	}
 	let textArea = document.getElementById("game-text");
 	let pathIndex = currentPath.indexOf(currentZone);
@@ -652,7 +688,7 @@ function restForTheNight() {
 	isSleeping = true;
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
-	textArea.innerHTML = "You rest at " + currentZone.name + "for the night."
+	textArea.innerHTML = "You rest at " + currentZone.name + " for the night."
 	if (currentZone.name === homeZone.name) {
 		removeElementsByClassName ("game-elements");
 		textArea.innerHTML += " Since you are home, you will sleep safely.";
@@ -669,7 +705,6 @@ function restForTheNight() {
 
 startGameLoop();
 
-// TODO: Lock Castle until visited locations length of 26
-// TODO: Prevent forward movement from Castle
-// TODO: Special Logic for Boss enemy, including WIn State
+// TODO: Prevent forward movement from Castle in newZoneArrival function
+// TODO: Special Logic for Boss enemy, including Win State
 // TODO: Seed encounter tables, more creative zone names
