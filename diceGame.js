@@ -1,5 +1,6 @@
 "use strict";
 
+// Default values, used for a new game
 let defaultVisitedZones = [];
 let defaultNewPlayerArgs = new Map();
 defaultNewPlayerArgs.set("currentLevel", 1);
@@ -12,6 +13,7 @@ defaultNewPlayerArgs.set("currentUnlockedAreas", defaultVisitedZones);
 defaultNewPlayerArgs.set("currentDayCount", 1);
 defaultNewPlayerArgs.set("currentHealth", defaultNewPlayerArgs.get("currentMaxHealth"));
 
+// Defines Player Object
 let PlayerObj = class {
 	constructor (strength, accuracy, maxHealth, defence, currentHealth, level, exp, dayCountTotal, unlockedAreas) {
 		this.strength = strength;
@@ -26,6 +28,7 @@ let PlayerObj = class {
 	}
 }
 
+// Instantiates player, starts at defined new player values
 let playerStatus = new PlayerObj(
 	defaultNewPlayerArgs.get("currentStrength"),
 	defaultNewPlayerArgs.get("currentAccuracy"),
@@ -105,6 +108,7 @@ let zonePaths;
 let currentEnemy;
 let currentEnemyHealth;
 
+// Defines zones that player will progress through
 let Zone = class {
 	constructor (name, encounterTable, timeToTravel, chanceOfEncounter) {
 		this.name = name;
@@ -113,6 +117,8 @@ let Zone = class {
 		this.chanceOfEncounter = chanceOfEncounter;
 	}
 }
+
+// Defines enemies for comat encounters
 let Enemy = class {
 	constructor (name, pluralName, strength, accuracy, maxHealth, defence, specialMoveName, specialMoveDamage, expGiven, currentHealth) {
 		this.name = name;
@@ -128,12 +134,14 @@ let Enemy = class {
 	}
 }
 
+// Defines combat encounters using existing enemies
 let CombatEncounter = class {
 	constructor (enemy) {
 		this.enemy = enemy;
 	}
 }
 
+// Defines encounters that change stats instead of initiating combat
 let NonCombatEncounter = class {
 	constructor (textDescription, statToAffect, affectNumber) {
 		this.textDescription = textDescription;
@@ -152,6 +160,7 @@ if (!playerStatus.unlockedAreas.includes(homeZone.name)) {
 	playerStatus.unlockedAreas.push(homeZone.name);
 }
 
+// Initializes Encounter tables when an encounter is being rolled
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
 	wolvesEncounter = new CombatEncounter(wolvesEnemy);
@@ -160,7 +169,7 @@ function initEncounters() {
 	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 20);
 
 	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, rockSlideEncounter];
-	finalEncounterTable = [demonKingEncounter, demonKingEncounter, demonKingEncounter, demonKingEncounter, demonKingEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
+	finalEncounterTable = [wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 
 	mountainTables = [testTable, testTable, testTable, testTable, testTable];
 	islandTables = [testTable, testTable, testTable, testTable, testTable];
@@ -168,37 +177,37 @@ function initEncounters() {
 	swampTables = [testTable, testTable, testTable, testTable, testTable];
 	forestTables = [testTable, testTable, testTable, testTable, testTable];
 
-	mountainZoneOne = new Zone ("Mountain1", mountainTables[0], 1, 7);
-	mountainZoneTwo = new Zone ("Mountain2", mountainTables[1], 2, 8);
-	mountainZoneThree = new Zone ("Mountain3", mountainTables[2], 3, 9);
-	mountainZoneFour = new Zone ("Mountain4", mountainTables[3], 4, 10);
-	mountainZoneFive = new Zone ("Mountain5", mountainTables[4], 5, 11);
+	mountainZoneOne = new Zone ("The Red Cliffs", mountainTables[0], 1, 7);
+	mountainZoneTwo = new Zone ("Mount Cieve", mountainTables[1], 2, 8);
+	mountainZoneThree = new Zone ("The Perilous Peak", mountainTables[2], 3, 9);
+	mountainZoneFour = new Zone ("The Caves of Cieve", mountainTables[3], 4, 10);
+	mountainZoneFive = new Zone ("The Demon's Peak", mountainTables[4], 5, 11);
 
-	islandZoneOne = new Zone ("Island1", islandTables[0], 1, 7);
-	islandZoneTwo = new Zone ("Island2", islandTables[1], 2, 8);
-	islandZoneThree = new Zone ("Island3", islandTables[2], 3, 9);
-	islandZoneFour = new Zone ("Island4", islandTables[3], 4, 10);
-	islandZoneFive = new Zone ("Island5", islandTables[4], 5, 11);
+	islandZoneOne = new Zone ("The Blue Depths", islandTables[0], 1, 7);
+	islandZoneTwo = new Zone ("Pirate's Cove", islandTables[1], 2, 8);
+	islandZoneThree = new Zone ("Where Men Shan't Return", islandTables[2], 3, 9);
+	islandZoneFour = new Zone ("The True Depths", islandTables[3], 4, 10);
+	islandZoneFive = new Zone ("The Demon's Peninsula", islandTables[4], 5, 11);
 
-	plainsZoneOne = new Zone ("Plains1", plainsTables[0], 1, 7);
-	plainsZoneTwo = new Zone ("Plains2", plainsTables[1], 2, 8);
-	plainsZoneThree = new Zone ("Plains3", plainsTables[2], 3, 9);
-	plainsZoneFour = new Zone ("Plains4", plainsTables[3], 4, 10);
-	plainsZoneFive = new Zone ("Plains5", plainsTables[4], 5, 11);
+	plainsZoneOne = new Zone ("The White Expanse", plainsTables[0], 1, 7);
+	plainsZoneTwo = new Zone ("Cieve's Rest", plainsTables[1], 2, 8);
+	plainsZoneThree = new Zone ("The Muddied Reprieve", plainsTables[2], 3, 9);
+	plainsZoneFour = new Zone ("The Ashen Plains", plainsTables[3], 4, 10);
+	plainsZoneFive = new Zone ("The Demon's Battleground", plainsTables[4], 5, 11);
 
-	swampZoneOne = new Zone ("Swamp1", swampTables[0], 1, 7);
-	swampZoneTwo = new Zone ("Swamp2", swampTables[1], 2, 8);
-	swampZoneThree = new Zone ("Swamp3", swampTables[2], 3, 9);
-	swampZoneFour = new Zone ("Swamp4", swampTables[3], 4, 10);
-	swampZoneFive = new Zone ("Swamp5", swampTables[4], 5, 11);
+	swampZoneOne = new Zone ("The Black Moors", swampTables[0], 1, 7);
+	swampZoneTwo = new Zone ("Compost Bay", swampTables[1], 2, 8);
+	swampZoneThree = new Zone ("The Flame Seas", swampTables[2], 3, 9);
+	swampZoneFour = new Zone ("The Red Waters", swampTables[3], 4, 10);
+	swampZoneFive = new Zone ("The Demon's Reprieve", swampTables[4], 5, 11);
 
-	forestZoneOne = new Zone ("Forest1", forestTables[0], 1, 7);
-	forestZoneTwo = new Zone ("Forest2", forestTables[1], 2, 8);
-	forestZoneThree = new Zone ("Forest3", forestTables[2], 3, 9);
-	forestZoneFour = new Zone ("Forest4", forestTables[3], 4, 10);
-	forestZoneFive = new Zone ("Forest5", forestTables[4], 5, 11);
+	forestZoneOne = new Zone ("The Green Canopy", forestTables[0], 1, 7);
+	forestZoneTwo = new Zone ("The Maze of Pines", forestTables[1], 2, 8);
+	forestZoneThree = new Zone ("Where None May Hear", forestTables[2], 3, 9);
+	forestZoneFour = new Zone ("The Strangling Roots", forestTables[3], 4, 10);
+	forestZoneFive = new Zone ("The Demon's Greatwood", forestTables[4], 5, 11);
 
-	finalZone = new Zone ("Castle", finalEncounterTable, 8, 12);
+	finalZone = new Zone ("The Demon's Fortress", finalEncounterTable, 8, 12);
 
 	zonePathOne = [homeZone, mountainZoneOne, mountainZoneTwo, mountainZoneThree, mountainZoneFour, mountainZoneFive, finalZone];
 	zonePathTwo = [homeZone, islandZoneOne, islandZoneTwo, islandZoneThree, islandZoneFour, islandZoneFive, finalZone];
@@ -208,6 +217,7 @@ function initEncounters() {
 	zonePaths = [zonePathOne, zonePathTwo, zonePathThree, zonePathFour, zonePathFive];
 }
 
+// Sets up base game window values
 function startGameLoop (gameState = defaultNewPlayerArgs) {
 	initEncounters();
 	currentZone = homeZone;
@@ -216,6 +226,7 @@ function startGameLoop (gameState = defaultNewPlayerArgs) {
 	startDay();
 }
 
+// Creates HTML elements used as containers for gameplay interaction elements
 function initializeGameWindow () {
 	let gameWindowDiv = document.createElement("div");
 	let gameWindowForm = document.createElement("form");
@@ -228,6 +239,7 @@ function initializeGameWindow () {
 	gameWindowDiv.appendChild(gameWindowForm);
 }
 
+// Adds a button, assigns a class, and assigns an onclick function
 function addButton (buttonText, buttonType, buttonFunction, buttonClass) {
 	let newButton = document.createElement("button");
 	newButton.setAttribute("type", buttonType);
@@ -239,6 +251,7 @@ function addButton (buttonText, buttonType, buttonFunction, buttonClass) {
 	gameWindowDiv.appendChild(newButton);
 }
 
+// Starts new day
 function startDay (startZone) {
 	removeElementsByClassName ("game-elements");
 	if (isSleeping === true) {
@@ -252,13 +265,14 @@ function startDay (startZone) {
 		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 	}
 	else if (currentZone.name === finalZone.name) {
-		addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
+		addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
 	}
 	currentHealth = playerStatus.maxHealth;
 	timeCounter = 0;
 	initEncounters();
 }
 
+// Removes all elements with chosen class name, used for resetting buttons
 function removeElementsByClassName (className) {
 	let toRemove = document.getElementsByClassName(className);
 	while (toRemove.length > 0) {
@@ -266,6 +280,7 @@ function removeElementsByClassName (className) {
 	}
 }
 
+// Creates buttons for traversing the game world
 function selectArea() {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -280,27 +295,28 @@ function selectArea() {
 	else {
 		if (currentZone.name === currentPath[5].name) {
 			if (playerStatus.unlockedAreas.length >= 26) {
-				textArea.innerHTML = "The castle is now unlocked. Will you move forward or head back?";
-				addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
+				textArea.innerHTML = "The Demon's Fortress is now unlocked. Will you move forward or head back?";
+				addButton("Forward", "button", "travelPath('" + currentPath + "')", "game-elements");
 				addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 			}
 			else {
-				textArea.innerHTML = "The castle is locked. You will need to head back.";
+				textArea.innerHTML = "The Demon's Fortresss is locked. You will need to head back.";
 				addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 			}
 		}
 		else if (currentZone.name === currentPath[6].name) {
-			textArea.innerHTML = "You are in the castle and cannot go forward. You will need to retreat.";
+			textArea.innerHTML = "You are in the Demon's Fortress and cannot go forward. You will need to retreat.";
 			addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 		}
 		else {
 			textArea.innerHTML = "Will you move forward or head back?";
-			addButton("Foreward", "button", "travelPath('" + currentPath + "')", "game-elements");
+			addButton("Forward", "button", "travelPath('" + currentPath + "')", "game-elements");
 			addButton("Backward", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 		}
 	}
 }
 
+// Once path is selected, text and button before travel commences
 function selectPath (pathToSelect) {
 	removeElementsByClassName ("game-elements");
 	let currentVisitedZone = currentZone;
@@ -309,6 +325,7 @@ function selectPath (pathToSelect) {
 	addButton("Okay", "button", "travelPath('" + pathToSelect + "')", "game-elements");
 }
 
+// Sets path to travel if starting at origin point, and travels to next node along the chosen path
 function travelPath(currentPathOption) {
 	if (currentZone === homeZone) {
 		if (currentPathOption === 'mountain') {
@@ -331,11 +348,13 @@ function travelPath(currentPathOption) {
 	beginTravelTime (currentPath[pathIndex + 1]);
 }
 
+// USed for traversing down the path instead of up
 function travelPathBack (currentPathOption) {
 	let pathIndex = currentPath.indexOf(currentZone);
 	beginTravelTime (currentPath[pathIndex - 1]);
 }
 
+// Resets travel counter and then rolls for encounters once per game hour until arrival
 function beginTravelTime(areaGoal) {
 	removeElementsByClassName ("game-elements");
 	currentZone = areaGoal;
@@ -363,6 +382,7 @@ function beginTravelTime(areaGoal) {
 	}
 }
 
+// Same as above, but does not reset goal zone or travel counter
 function continueTravelTime(areaGoal) {
 	removeElementsByClassName ("game-elements");
 	let gotEncounter = false;
@@ -387,6 +407,7 @@ function continueTravelTime(areaGoal) {
 	}
 }
 
+// Once an encounter appears, rolls to decide what encounter, and handles based on encounter type
 function performEncounter(encounter) {
 	if (encounter.constructor.name === "CombatEncounter")	{
 		removeElementsByClassName ("game-elements");
@@ -443,6 +464,7 @@ function performEncounter(encounter) {
 	}
 }
 
+// Plauer's turn in combat encounter
 function playerAttack () {
 	removeElementsByClassName ("game-elements");
 	console.log("Enemy Health: " + currentEnemy.currentHealth);
@@ -459,12 +481,13 @@ function playerAttack () {
 		addButton("Attack", "button", "standardAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
 		addButton("Special Attack", "button", "specialAttack(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
 		addButton("Heal", "button", "healEntity(playerStatus, 'enemyAttack()')", "game-elements");
-		if (isSleeping === false) {
+		if (isSleeping === false && currentEnemy.name !== "Demon King") {
 			addButton("Run Away", "button", "runFromBattle(playerStatus, currentEnemy, 'enemyAttack()')", "game-elements");
 		}
 	}
 }
 
+// Enemy's turn in combat encounter
 function enemyAttack () {
 	removeElementsByClassName ("game-elements");
 	if (playerStatus.currentHealth <= 0) {
@@ -508,10 +531,12 @@ function enemyAttack () {
 	}
 }
 
+// Returns random value between 1 and given number
 function rollDie (numSides) {
 	return Math.floor(Math.random() * numSides) + 1;
 }
 
+// Result of clicking "Attack" button, damages other combat entity
 function standardAttack(attackingEntity, receivingEntity, turnModifier) {
 	let damageVal = processDamage(attackingEntity, receivingEntity);
 	let textArea = document.getElementById("game-text");
@@ -533,30 +558,40 @@ function standardAttack(attackingEntity, receivingEntity, turnModifier) {
 	}
 }
 
+// Attacks 0 to 4 times based on die roll
 function specialAttack(attackingEntity, receivingEntity, turnModifier) {
 	let damageTotal = 0;
 	let textArea = document.getElementById("game-text");
 	let attacker = "";
+	let numAttacks = rollDie(5) - 1;
 	if (attackingEntity === playerStatus) {
 		attacker = "You";
 	}
 	else {
 		attacker = "The enemy";
 	}
-	for (let i = 0; i < rollDie(4); i++) {
-		damageTotal += processDamage(attackingEntity, receivingEntity);
-	}
-	if (damageTotal > 0) {
-		textArea.innerHTML = attacker + " attacked for a total of " + damageTotal + " damage!";
-		receivingEntity.currentHealth -= damageTotal;
+	if (numAttacks === 0) {
+		removeElementsByClassName ("game-elements");
+		textArea.innerHTML = attacker + " failed the special attack!";
 		addButton("Okay", "button", turnModifier, "game-elements");
 	}
 	else {
-		textArea.innerHTML = attacker + " missed every attack!";
-		addButton("Okay", "button", turnModifier, "game-elements");
+		for (let i = 0; i < numAttacks; i++) {
+			damageTotal += processDamage(attackingEntity, receivingEntity);
+		}
+		if (damageTotal > 0) {
+			textArea.innerHTML = attacker + " attacked for a total of " + damageTotal + " damage!";
+			receivingEntity.currentHealth -= damageTotal;
+			addButton("Okay", "button", turnModifier, "game-elements");
+		}
+		else {
+			textArea.innerHTML = attacker + " missed every attack!";
+			addButton("Okay", "button", turnModifier, "game-elements");
+		}
 	}
 }
 
+// Generated damage values for normal and special attacks
 function processDamage(attackingEntity, receivingEntity) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -583,6 +618,7 @@ function processDamage(attackingEntity, receivingEntity) {
 	}
 }
 
+// Heals entity calling the function based on the creature's maximum health
 function healEntity(healingEntity, turnModifier) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -603,6 +639,7 @@ function healEntity(healingEntity, turnModifier) {
 	addButton("Okay", "button", turnModifier, "game-elements");
 }
 
+// Entity rund from battle if it has a higher accuracy than it's opponent
 function runFromBattle(attackingEntity, receivingEntity, turnModifier) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -623,6 +660,7 @@ function runFromBattle(attackingEntity, receivingEntity, turnModifier) {
 	}
 }
 
+// Handles post-combat state, including giving XP and handling player death
 function endCombat (isPlayerDead, expGained) {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -656,6 +694,7 @@ function endCombat (isPlayerDead, expGained) {
 	}
 }
 
+// Increments player's stats on level up
 function levelUp() {
 	while (playerStatus.exp >= 1000) {
 		playerStatus.exp -= 1000;
@@ -670,14 +709,15 @@ function levelUp() {
 	}
 }
 
+// Once you arrive in a new zone, make sure the zone is in the array of visited zones and gve options to grind or move forward
 function newZoneArrival() {
 	removeElementsByClassName ("game-elements");
 	if (!playerStatus.unlockedAreas.includes(currentZone.name)) {
 		playerStatus.unlockedAreas.push(currentZone.name);
 		if (currentZone.name === currentPath[5].name) {
-			alert("You find a magical-looking lever and pull it. One of the castle gates is now open!");
+			alert("You find a magical-looking lever and pull it. One of the Demon's Fortress gates is now open!");
 			if (playerStatus.unlockedAreas.length === 26) {
-				alert("You feel a chill in the air. The last castle gate has been unlocked, and the Demon King is waiting for you!");
+				alert("You feel a chill in the air. The last Demon's Fortress gate has been unlocked, and the Demon King is waiting for you!");
 			}
 		}
 	}
@@ -700,16 +740,16 @@ function newZoneArrival() {
 	}
 	else {
 		if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
-			textArea.innerHTML = "You have reached the Castle. Hunt the Demon King!";
-			addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
+			textArea.innerHTML = "You have reached the Demon's Fortress. Hunt the Demon King!";
+			addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
 			addButton("Retreat", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 		}
 		else if (timeCounter < 12){
-			textArea.innerHTML = "You have reached the Castle. There is not enough time to retreat.";
-			addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
+			textArea.innerHTML = "You have reached the Demon's Fortress. There is not enough time to retreat.";
+			addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
 		}
 		else {
-			textArea.innerHTML = "You have reached the Castle. There is not enough time to retreat or hunt today.";
+			textArea.innerHTML = "You have reached the Demon's Fortress. There is not enough time to retreat or hunt today.";
 		}
 	}
 	if (currentZone.name !== homeZone.name && timeCounter < 12 && currentZone.name !== currentPath[6].name) {
@@ -718,12 +758,14 @@ function newZoneArrival() {
 	addButton("Rest for the Night", "button", "restForTheNight()", "game-elements");
 }
 
+// Handles player choosing to grind instead of moving to another zone
 function stayAndTrain() {
 	timeCounter++;
 	let encounterNum = (rollDie(currentZone.encounterTable.length) - 1);
 	performEncounter(currentZone.encounterTable[encounterNum]);
 }
 
+// Once all 12 day hours elapse, player must rest and start a new day
 function restForTheNight() {
 	isSleeping = true;
 	removeElementsByClassName ("game-elements");
@@ -743,6 +785,7 @@ function restForTheNight() {
 	}
 }
 
+// Handles successfully defeating the final boss
 function endGame() {
 	removeElementsByClassName ("game-elements");
 	let textArea = document.getElementById("game-text");
@@ -750,6 +793,7 @@ function endGame() {
 	addButton("Play Again", "button", "newGame()", "game-elements");
 }
 
+// Regenerates values so a player can start over once they beat the game
 function newGame() {
 	removeElementsByClassName ("game-elements");
 	let gameWindowText = document.getElementById("game-text");
@@ -770,6 +814,18 @@ function newGame() {
   gameWindowForm.parentNode.removeChild(gameWindowForm);
 	gameWindowText.parentNode.removeChild(gameWindowText);
 	gameWindowDiv.parentNode.removeChild(gameWindowDiv);
+	while (playerStatus.unlockedAreas.length > 0) {
+		playerStatus.unlockedAreas.pop();
+	}
+	if (!playerStatus.unlockedAreas.includes("Home")) {
+		playerStatus.unlockedAreas.push("Home");
+	}
+	startGameLoop();
+}
+
+// Spawns custom encounter with final boss
+function finalEncounter() {
+	performEncounter(demonKingEncounter);
 }
 
 startGameLoop();
