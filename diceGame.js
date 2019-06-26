@@ -46,6 +46,8 @@ let travelCounter;
 let isSleeping = false;
 
 let wolfEncounter;
+let wolvesEncounter;
+let demonKingEncounter;
 let rockSlideEncounter;
 let emptyEncounter;
 
@@ -139,7 +141,9 @@ let NonCombatEncounter = class {
 		this.affectNumber = affectNumber;
 	}
 }
-let wolfEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 25, 150);
+let wolfEnemy = new Enemy ("Wolf", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let wolvesEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let demonKing = new Enemy ("Demon King", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
 
 emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 homeZone = new Zone ("Home", emptyTable, 1, 0);
@@ -150,11 +154,13 @@ if (!playerStatus.unlockedAreas.includes(homeZone.name)) {
 
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
+	wolvesEncounter = new CombatEncounter(wolvesEnemy);
+	demonKingEncounter = new CombatEncounter(demonKing);
 	rockSlideEncounter = new NonCombatEncounter("You are hit by a rockslide!", "health", -100);
 	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 20);
 
-	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, rockSlideEncounter, rockSlideEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
-	finalEncounterTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
+	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, rockSlideEncounter];
+	finalEncounterTable = [demonKingEncounter, demonKingEncounter, demonKingEncounter, demonKingEncounter, demonKingEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 
 	mountainTables = [testTable, testTable, testTable, testTable, testTable];
 	islandTables = [testTable, testTable, testTable, testTable, testTable];
@@ -242,8 +248,11 @@ function startDay (startZone) {
 	let textArea = document.getElementById("game-text");
 	textArea.innerHTML = "You wake up at " + currentZone.name + ".";
 	addButton("Go Out", "button", "selectArea()", "game-elements");
-	if (currentZone !== homeZone) {
+	if (currentZone.name !== homeZone.name && currentZone.name!== finalZone.name) {
 		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
+	}
+	else if (currentZone.name === finalZone.name) {
+		addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
 	}
 	currentHealth = playerStatus.maxHealth;
 	timeCounter = 0;
@@ -383,10 +392,15 @@ function performEncounter(encounter) {
 		removeElementsByClassName ("game-elements");
 		let textArea = document.getElementById("game-text");
 		currentEnemy = new Enemy(encounter.enemy.name, encounter.enemy.pluralName, encounter.enemy.strength, encounter.enemy.accuracy, encounter.enemy.maxHealth, encounter.enemy.defence, encounter.enemy.specialMoveName, encounter.enemy.specialMoveDamage, encounter.enemy.expGiven, encounter.enemy.currentHealth);
-		let numEnemies = rollDie(4);
+		let numEnemies;
+		if (currentEnemy.pluralName === "") {
+			numEnemies = 1;
+		}
+		else {
+			numEnemies = rollDie(4) + 1;
+		}
 		if (numEnemies > 1) {
 			currentEnemy.maxHealth *= numEnemies;
-			currentEnemy.expGiven *= numEnemies;
 			currentEnemy.currentHealth = currentEnemy.maxHealth;
 			alert("You are attacked by " + numEnemies + " " + currentEnemy.pluralName + "!");
 			textArea.innerHTML = "The " + numEnemies + " " + currentEnemy.pluralName + " are staring you down.";
@@ -425,6 +439,7 @@ function performEncounter(encounter) {
 		else if (isSleeping === true) {
 			addButton("Okay", "button", "startDay(currentZone)", "game-elements");
 		}
+		playerStatus.exp += 10;
 	}
 }
 
@@ -618,31 +633,40 @@ function endCombat (isPlayerDead, expGained) {
 	else if (expGained !== 0) {
 		textArea.innerHTML = "You win! You gained " + expGained + " EXP!";
 		playerStatus.exp += expGained;
-		if (playerStatus.exp > 1000) {
+		if (playerStatus.exp >= 1000) {
 			levelUp();
 			textArea.innerHTML += " You gained a level!";
+		}
+		if (currentEnemy.name === "Demon King") {
+			textArea.innerHTML += " You defeated the Demon King!";
 		}
 	}
 	else {
 		textArea.innerHTML = "You gained 0 EXP.";
 	}
 	playerStatus.currentHealth = playerStatus.maxHealth;
-	if (isSleeping === false) {
+	if (isSleeping === false && currentEnemy.name !== "Demon King") {
 		addButton("Okay", "button", "continueTravelTime(currentZone)", "game-elements");
 	}
-	else if (isSleeping === true) {
+	else if (isSleeping === true && currentEnemy.name !== "Demon King") {
 		addButton("Okay", "button", "startDay(currentZone)", "game-elements");
+	}
+	else if (currentEnemy.name === "Demon King") {
+		addButton("Okay", "button", "endGame()", "game-elements");
 	}
 }
 
 function levelUp() {
-	playerStatus.exp -= 1000;
-	playerStatus.level += 1;
-	playerStatus.strength += 1;
-	playerStatus.defence += 1;
-	playerStatus.maxHealth += 20;
-	if (level % 2 === 0) {
-		playerStatus.accuracy += 1;
+	while (playerStatus.exp >= 1000) {
+		playerStatus.exp -= 1000;
+		playerStatus.level += 1;
+		playerStatus.strength += 10;
+		playerStatus.defence += 10;
+		playerStatus.maxHealth += 200;
+		if (playerStatus.level % 2 === 0) {
+			playerStatus.accuracy += 10;
+		}
+		playerStatus.currentHealth = playerStatus.maxHealth;
 	}
 }
 
@@ -659,23 +683,39 @@ function newZoneArrival() {
 	}
 	let textArea = document.getElementById("game-text");
 	let pathIndex = currentPath.indexOf(currentZone);
-	if ((12 - timeCounter) >= currentPath[pathIndex + 1].timeToTravel) {
-		textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day. What will you do?";
-		addButton("Go Out", "button", "selectArea()", "game-elements");
-	}
-	else {
-		textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day, which is not enough to go forward.";
-		addButton("Rest for the Night", "button", "restForTheNight()", "game-elements");
-		if (currentZone !== currentPath[0]) {
-			if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
-				textArea.innerHTML += " However, there is still time to go backwards.";
-				addButton("Head Back", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+	if (currentZone.name !== currentPath[6].name) {
+		if ((12 - timeCounter) >= currentPath[pathIndex + 1].timeToTravel) {
+			textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day. What will you do?";
+			addButton("Go Out", "button", "selectArea()", "game-elements");
+		}
+		else {
+			textArea.innerHTML = "You have arrived at " + currentZone.name + ". You have " + (12 - timeCounter) + " hours left in the day, which is not enough to go forward.";
+			if (currentZone !== currentPath[0]) {
+				if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
+					textArea.innerHTML += " However, there is still time to go backwards.";
+					addButton("Head Back", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+				}
 			}
 		}
 	}
-	if (currentZone.name !== homeZone.name && timeCounter < 12) {
+	else {
+		if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
+			textArea.innerHTML = "You have reached the Castle. Hunt the Demon King!";
+			addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
+			addButton("Retreat", "button", "travelPathBack('" + currentPath + "')", "game-elements");
+		}
+		else if (timeCounter < 12){
+			textArea.innerHTML = "You have reached the Castle. There is not enough time to retreat.";
+			addButton("Hunt the Demon King", "button", "stayAndTrain()", "game-elements");
+		}
+		else {
+			textArea.innerHTML = "You have reached the Castle. There is not enough time to retreat or hunt today.";
+		}
+	}
+	if (currentZone.name !== homeZone.name && timeCounter < 12 && currentZone.name !== currentPath[6].name) {
 		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 	}
+	addButton("Rest for the Night", "button", "restForTheNight()", "game-elements");
 }
 
 function stayAndTrain() {
@@ -703,8 +743,35 @@ function restForTheNight() {
 	}
 }
 
+function endGame() {
+	removeElementsByClassName ("game-elements");
+	let textArea = document.getElementById("game-text");
+	textArea.innerHTML = "The Demon King is dead, and you are the new hero of the realm!";
+	addButton("Play Again", "button", "newGame()", "game-elements");
+}
+
+function newGame() {
+	removeElementsByClassName ("game-elements");
+	let gameWindowText = document.getElementById("game-text");
+	gameWindowText.innerHTML = "";
+	playerStatus = new PlayerObj(
+		defaultNewPlayerArgs.get("currentStrength"),
+		defaultNewPlayerArgs.get("currentAccuracy"),
+		defaultNewPlayerArgs.get("currentMaxHealth"),
+		defaultNewPlayerArgs.get("currentDefense"),
+		defaultNewPlayerArgs.get("currentHealth"),
+		defaultNewPlayerArgs.get("currentLevel"),
+		defaultNewPlayerArgs.get("currentXP"),
+		defaultNewPlayerArgs.get("currentDayCount"),
+		defaultNewPlayerArgs.get("currentUnlockedAreas")
+	);
+	let gameWindowDiv = document.getElementById("game-window");
+	let gameWindowForm = document.getElementById("game-form");
+  gameWindowForm.parentNode.removeChild(gameWindowForm);
+	gameWindowText.parentNode.removeChild(gameWindowText);
+	gameWindowDiv.parentNode.removeChild(gameWindowDiv);
+}
+
 startGameLoop();
 
-// TODO: Prevent forward movement from Castle in newZoneArrival function
-// TODO: Special Logic for Boss enemy, including Win State
 // TODO: Seed encounter tables, more creative zone names
