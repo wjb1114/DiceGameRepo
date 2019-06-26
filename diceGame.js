@@ -310,7 +310,6 @@ function initEncounters() {
 	forestFourTable = [giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
 	forestFiveTable = [giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
 
-
 	finalEncounterTable = [demonQueenEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincesEncounter, demonPrincesEncounter, demonPrincesEncounter, demonPrincessesEncounter, demonPrincessesEncounter, demonPrincessesEncounter, giantWolvesEncounter, giantSpidersEncounter, giantLionsEncounter, giantAlligatorsEncounter, giantCrabsEncounter];
 
 	mountainTables = [mountainOneTable, mountainTwoTable, mountainThreeTable, mountainFourTable, mountainFiveTable];
@@ -409,6 +408,7 @@ function startDay (startZone) {
 	}
 	else if (currentZone.name === finalZone.name) {
 		addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
+		addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 	}
 	currentHealth = playerStatus.maxHealth;
 	timeCounter = 0;
@@ -885,11 +885,13 @@ function newZoneArrival() {
 		if ((12 - timeCounter) >= currentPath[pathIndex - 1].timeToTravel) {
 			textArea.innerHTML = "You have reached the Demon's Fortress. Hunt the Demon King!";
 			addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
+			addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 			addButton("Retreat", "button", "travelPathBack('" + currentPath + "')", "game-elements");
 		}
 		else if (timeCounter < 12){
 			textArea.innerHTML = "You have reached the Demon's Fortress. There is not enough time to retreat.";
 			addButton("Hunt the Demon King", "button", "finalEncounter()", "game-elements");
+			addButton("Stay and Train", "button", "stayAndTrain()", "game-elements");
 		}
 		else {
 			textArea.innerHTML = "You have reached the Demon's Fortress. There is not enough time to retreat or hunt today.";
@@ -982,5 +984,3 @@ function initialGameButton() {
 }
 
 initialGameButton();
-
-// TODO: Seed encounter tables
