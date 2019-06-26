@@ -6,6 +6,8 @@
 .start-game {
 	margin: auto;
   width: 50%;
+	display: block;
+	text-align: center;
 }
 
 #game-form {
@@ -15,10 +17,18 @@
 
 #game-text {
 	margin: auto;
-  width: 50%;
+  width: 75%;
+	text-align: center;
 }
 
 .game-elements {
 	margin: auto;
+	display: block;
   width: 50%;
+}
+
+#game-title {
+	margin: auto;
+  width: 50%;
+	text-align: center;
 }

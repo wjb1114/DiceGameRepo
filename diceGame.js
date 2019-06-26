@@ -50,12 +50,70 @@ let isSleeping = false;
 
 let wolfEncounter;
 let wolvesEncounter;
+let lionEncounter;
+let lionsEncounter;
+let crabEncounter;
+let crabsEncounter;
+let alligatorEncounter;
+let alligatorsEncounter;
+let spiderEncounter;
+let spidersEncounter;
+
+let giantWolfEncounter;
+let giantWolvesEncounter;
+let giantLionEncounter;
+let giantLionsEncounter;
+let giantCrabEncounter;
+let giantCrabsEncounter;
+let giantAlligatorEncounter;
+let giantAlligatorsEncounter;
+let giantSpiderEncounter;
+let giantSpidersEncounter;
+
+let demonQueenEncounter;
+let demonPrinceEncounter;
+let demonPrincesEncounter;
+let demonPrincessEncounter;
+let demonPrincessesEncounter;
+
 let demonKingEncounter;
+
 let rockSlideEncounter;
 let emptyEncounter;
+let healEncounter;
 
-let testTable = [];
 let emptyTable = [];
+
+let mountainOneTable = [];
+let mountainTwoTable = [];
+let mountainThreeTable = [];
+let mountainFourTable = [];
+let mountainFiveTable = [];
+
+let islandOneTable = [];
+let islandTwoTable = [];
+let islandThreeTable = [];
+let islandFourTable = [];
+let islandFiveTable = [];
+
+let plainsOneTable = [];
+let plainsTwoTable = [];
+let plainsThreeTable = [];
+let plainsFourTable = [];
+let plainsFiveTable = [];
+
+let swampOneTable = [];
+let swampTwoTable = [];
+let swampThreeTable = [];
+let swampFourTable = [];
+let swampFiveTable = [];
+
+let forestOneTable = [];
+let forestTwoTable = [];
+let forestThreeTable = [];
+let forestFourTable = [];
+let forestFiveTable = [];
+
 let finalEncounterTable = [];
 
 let mountainTables = [];
@@ -151,7 +209,33 @@ let NonCombatEncounter = class {
 }
 let wolfEnemy = new Enemy ("Wolf", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
 let wolvesEnemy = new Enemy ("Wolf", "Wolves", 10, 10, 150, 10, "Bite", 20, 100, 150);
-let demonKing = new Enemy ("Demon King", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let lionEnemy = new Enemy ("Lion", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let lionsEnemy = new Enemy ("Lion", "Lions", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let crabEnemy = new Enemy ("Crab", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let crabsEnemy = new Enemy ("Crab", "Crabs", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let alligatorEnemy = new Enemy ("Alligator", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let alligatorsEnemy = new Enemy ("Alligator", "Alligators", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let spiderEnemy = new Enemy ("Spider", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let spidersEnemy = new Enemy ("Spider", "Spiders", 10, 10, 150, 10, "Bite", 20, 100, 150);
+
+let giantWolfEnemy = new Enemy ("Giant Wolf", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantWolvesEnemy = new Enemy ("Giant Wolf", "Giant Wolves", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantLionEnemy = new Enemy ("Giant Lion", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantLionsEnemy = new Enemy ("Giant Lion", "Giant Lions", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantCrabEnemy = new Enemy ("Giant Crab", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantCrabsEnemy = new Enemy ("Giant Crab", "Giant Crabs", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantAlligatorEnemy = new Enemy ("Giant Alligator", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantAlligatorsEnemy = new Enemy ("Giant Alligator", "Giant Alligators", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantSpiderEnemy = new Enemy ("Giant Spider", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
+let giantSpidersEnemy = new Enemy ("Giant Spider", "Giant Spiders", 50, 30, 750, 30, "Bite", 20, 100, 750);
+
+let demonQueenEnemy = new Enemy ("Demon Queen", "", 120, 65, 1750, 65, "Bite", 20, 100, 1750);
+let demonPrinceEnemy = new Enemy ("Demon Prince", "", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
+let demonPrincesEnemy = new Enemy ("Demon Prince", "Demon Princes", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
+let demonPrincessEnemy = new Enemy ("Demon Princess", "", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
+let demonPrincessesEnemy = new Enemy ("Demon Princess", "Demon Princesses", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
+
+let demonKingEnemy = new Enemy ("Demon King", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
 
 emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 homeZone = new Zone ("Home", emptyTable, 1, 0);
@@ -164,18 +248,76 @@ if (!playerStatus.unlockedAreas.includes(homeZone.name)) {
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
 	wolvesEncounter = new CombatEncounter(wolvesEnemy);
-	demonKingEncounter = new CombatEncounter(demonKing);
+	lionEncounter = new CombatEncounter(wolfEnemy);
+	lionsEncounter = new CombatEncounter(lionsEnemy);
+	crabEncounter = new CombatEncounter(crabEnemy);
+	crabsEncounter = new CombatEncounter(crabsEnemy);
+	alligatorEncounter = new CombatEncounter(alligatorEnemy);
+	alligatorsEncounter = new CombatEncounter(alligatorsEnemy);
+	spiderEncounter = new CombatEncounter(spiderEnemy);
+	spidersEncounter = new CombatEncounter(spidersEnemy);
+
+	giantWolfEncounter = new CombatEncounter(giantWolfEnemy);
+	giantWolvesEncounter = new CombatEncounter(giantWolvesEnemy);
+	giantLionEncounter = new CombatEncounter(giantLionEnemy);
+	giantLionsEncounter = new CombatEncounter(giantLionsEnemy);
+	giantCrabEncounter = new CombatEncounter(giantCrabEnemy);
+	giantCrabsEncounter = new CombatEncounter(giantCrabsEnemy);
+	giantAlligatorEncounter = new CombatEncounter(giantAlligatorEnemy);
+	giantAlligatorsEncounter = new CombatEncounter(giantAlligatorsEnemy);
+	giantSpiderEncounter = new CombatEncounter(giantSpiderEnemy);
+	giantSpidersEncounter = new CombatEncounter(giantSpidersEnemy);
+
+	demonQueenEncounter = new CombatEncounter(demonQueenEnemy);
+	demonPrinceEncounter = new CombatEncounter(demonPrinceEnemy);
+	demonPrincesEncounter = new CombatEncounter(demonPrincesEnemy);
+	demonPrincessEncounter = new CombatEncounter(demonPrincessEnemy);
+	demonPrincessesEncounter = new CombatEncounter(demonPrincessesEnemy);
+
+	demonKingEncounter = new CombatEncounter(demonKingEnemy);
+
 	rockSlideEncounter = new NonCombatEncounter("You are hit by a rockslide!", "health", -100);
-	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 20);
+	healEncounter = new NonCombatEncounter("You manage to heal yourself.", "health", 100);
+	emptyEncounter = new NonCombatEncounter("You weren't attacked and manage to gain some health back.", "health", 1);
 
-	testTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, rockSlideEncounter];
-	finalEncounterTable = [wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
+	mountainOneTable = [wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	mountainTwoTable = [wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, wolfEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	mountainThreeTable = [wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, wolvesEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	mountainFourTable = [giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, giantWolfEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	mountainFiveTable = [giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, giantWolvesEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
 
-	mountainTables = [testTable, testTable, testTable, testTable, testTable];
-	islandTables = [testTable, testTable, testTable, testTable, testTable];
-	plainsTables = [testTable, testTable, testTable, testTable, testTable];
-	swampTables = [testTable, testTable, testTable, testTable, testTable];
-	forestTables = [testTable, testTable, testTable, testTable, testTable];
+	islandOneTable = [crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	islandTwoTable = [crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, crabEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	islandThreeTable = [crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, crabsEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	islandFourTable = [giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, giantCrabEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	islandFiveTable = [giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, giantCrabsEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
+
+	plainsOneTable = [lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	plainsTwoTable = [lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, lionEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	plainsThreeTable = [lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, lionsEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	plainsFourTable = [giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, giantLionEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	plainsFiveTable = [giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, giantLionsEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
+
+	swampOneTable = [alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	swampTwoTable = [alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, alligatorEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	swampThreeTable = [alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, alligatorsEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	swampFourTable = [giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, giantAlligatorEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	swampFiveTable = [giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, giantAlligatorsEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
+
+	forestOneTable = [spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	forestTwoTable = [spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, spiderEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	forestThreeTable = [spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, spidersEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	forestFourTable = [giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, giantSpiderEncounter, rockSlideEncounter, emptyEncounter, emptyEncounter, healEncounter, healEncounter];
+	forestFiveTable = [giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, giantSpidersEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrinceEncounter, emptyEncounter, emptyEncounter, rockSlideEncounter, healEncounter];
+
+
+	finalEncounterTable = [demonQueenEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrinceEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincessEncounter, demonPrincesEncounter, demonPrincesEncounter, demonPrincesEncounter, demonPrincessesEncounter, demonPrincessesEncounter, demonPrincessesEncounter, giantWolvesEncounter, giantSpidersEncounter, giantLionsEncounter, giantAlligatorsEncounter, giantCrabsEncounter];
+
+	mountainTables = [mountainOneTable, mountainTwoTable, mountainThreeTable, mountainFourTable, mountainFiveTable];
+	islandTables = [islandOneTable, islandTwoTable, islandThreeTable, islandFourTable, islandFiveTable];
+	plainsTables = [plainsOneTable, plainsTwoTable, plainsThreeTable, plainsFourTable, plainsFiveTable];
+	swampTables = [swampOneTable, swampTwoTable, swampThreeTable, swampFourTable, swampFiveTable];
+	forestTables = [forestOneTable, forestTwoTable, forestThreeTable, forestFourTable, forestFiveTable];
 
 	mountainZoneOne = new Zone ("The Red Cliffs", mountainTables[0], 1, 7);
 	mountainZoneTwo = new Zone ("Mount Cieve", mountainTables[1], 2, 8);
