@@ -219,6 +219,7 @@ function initEncounters() {
 
 // Sets up base game window values
 function startGameLoop (gameState = defaultNewPlayerArgs) {
+	removeElementsByClassName("start-game");
 	initEncounters();
 	currentZone = homeZone;
 	currentPath = zonePathOne;
@@ -828,6 +829,16 @@ function finalEncounter() {
 	performEncounter(demonKingEncounter);
 }
 
-startGameLoop();
+function initialGameButton() {
+	let newButton = document.createElement("button");
+	newButton.setAttribute("type", "button");
+	newButton.setAttribute("onclick", "startGameLoop()");
+	newButton.setAttribute("class", "start-game");
+	let newButtonText = document.createTextNode("Start Game");
+	newButton.appendChild(newButtonText);
+	document.body.appendChild(newButton);
+}
 
-// TODO: Seed encounter tables, more creative zone names
+initialGameButton();
+
+// TODO: Seed encounter tables
