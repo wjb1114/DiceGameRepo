@@ -229,13 +229,13 @@ let giantAlligatorsEnemy = new Enemy ("Giant Alligator", "Giant Alligators", 50,
 let giantSpiderEnemy = new Enemy ("Giant Spider", "", 50, 30, 750, 30, "Bite", 20, 100, 750);
 let giantSpidersEnemy = new Enemy ("Giant Spider", "Giant Spiders", 50, 30, 750, 30, "Bite", 20, 100, 750);
 
-let demonQueenEnemy = new Enemy ("Demon Queen", "", 120, 65, 1750, 65, "Bite", 20, 100, 1750);
-let demonPrinceEnemy = new Enemy ("Demon Prince", "", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
-let demonPrincesEnemy = new Enemy ("Demon Prince", "Demon Princes", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
-let demonPrincessEnemy = new Enemy ("Demon Princess", "", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
-let demonPrincessesEnemy = new Enemy ("Demon Princess", "Demon Princesses", 100, 50, 1500, 50, "Bite", 20, 100, 1500);
+let demonQueenEnemy = new Enemy ("Demon Queen", "", 120, 65, 5000, 65, "Bite", 20, 100, 5000);
+let demonPrinceEnemy = new Enemy ("Demon Prince", "", 100, 50, 2500, 50, "Bite", 20, 100, 2500);
+let demonPrincesEnemy = new Enemy ("Demon Prince", "Demon Princes", 100, 50, 2500, 50, "Bite", 20, 100, 2500);
+let demonPrincessEnemy = new Enemy ("Demon Princess", "", 100, 50, 2500, 50, "Bite", 20, 100, 2500);
+let demonPrincessesEnemy = new Enemy ("Demon Princess", "Demon Princesses", 100, 50, 2500, 50, "Bite", 20, 100, 2500);
 
-let demonKingEnemy = new Enemy ("Demon King", "", 10, 10, 150, 10, "Bite", 20, 100, 150);
+let demonKingEnemy = new Enemy ("Demon King", "", 150, 100, 15000, 100, "Bite", 20, 100, 15000);
 
 emptyTable = [emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter, emptyEncounter];
 homeZone = new Zone ("Home", emptyTable, 1, 0);
@@ -248,7 +248,7 @@ if (!playerStatus.unlockedAreas.includes(homeZone.name)) {
 function initEncounters() {
 	wolfEncounter = new CombatEncounter(wolfEnemy);
 	wolvesEncounter = new CombatEncounter(wolvesEnemy);
-	lionEncounter = new CombatEncounter(wolfEnemy);
+	lionEncounter = new CombatEncounter(lionEnemy);
 	lionsEncounter = new CombatEncounter(lionsEnemy);
 	crabEncounter = new CombatEncounter(crabEnemy);
 	crabsEncounter = new CombatEncounter(crabsEnemy);
